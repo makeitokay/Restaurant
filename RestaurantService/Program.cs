@@ -1,7 +1,9 @@
 using System.Reflection;
 using FluentValidation;
+using Infrastructure;
 using Infrastructure.Extensions;
 using Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
 using RestaurantService.Tasks;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,5 +32,11 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+var dbContext = app.Services.GetRequiredService<ApplicationDbContext>();
+if (dbContext.Database.GetPendingMigrations().Any())
+{
+	await dbContext.Database.MigrateAsync();
+}
 
 app.Run();
