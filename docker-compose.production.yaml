@@ -1,0 +1,33 @@
+version: "3.6"
+services:
+  nginx:
+    image: restaurant_nginx:latest
+    restart: always
+    build:
+      context: nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - auth_service
+      - restaurant_service
+  auth_service:
+    image: restaurant_auth_service:latest
+    restart: always
+    build:
+      context: .
+      target: AuthService
+    environment:
+      - DOTNET_ENVIRONMENT=Production
+      - RESTAURANT_Auth:JwtSecretKey=${TOP_SECRET_JWT_KEY}
+    depends_on:
+      - postgres
+  restaurant_service:
+    image: restaurant_service:latest
+    restart: always
+    build:
+      context: .
+    environment:
+      - DOTNET_ENVIRONMENT=Production
+      - RESTAURANT_Auth:JwtSecretKey=${TOP_SECRET_JWT_KEY}
+    depends_on:
+      - postgres

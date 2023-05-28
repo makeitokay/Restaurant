@@ -1,0 +1,16 @@
+version: '3.6'
+
+volumes:
+  restaurant_postgres_data:
+
+services:
+  postgres:
+    image: library/postgres:15.1-alpine
+    volumes:
+      - restaurant_postgres_data:/var/lib/postgresql/data/
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: "Restaurant"
+    ports:
+      - "1111:5432"
